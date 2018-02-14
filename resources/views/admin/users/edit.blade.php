@@ -7,7 +7,7 @@
             {!!
                 form($form->add('edit','submit', [
                     'attr' => ['class' => 'btn btn-primary btn-block'],
-                    'label' => 'Editar'
+                    'label' => Icon::pencil().' Editar'
                 ]))
             !!}
         </div>
