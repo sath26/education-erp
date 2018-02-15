@@ -16,7 +16,7 @@
 <body>
 <div id="app">
     @php
-        $navbar = Navbar::withBrand(config('app.name'), route('admin.dashboard'));
+        $navbar = Navbar::withBrand(config('app.name'), url('/'));
         if (Auth::check()){
             $arrayLinks = [
                 ['link' => route('admin.users.index'), 'title' => 'Usuário']
@@ -50,7 +50,10 @@
     @endphp
 
     {!! $navbar !!}
-    {!! form($formLogout) !!}
+
+    @if(Auth::check())
+        {!! form($formLogout) !!}
+    @endif
 
     @if(Session::has('message'))
         <div class="container">
