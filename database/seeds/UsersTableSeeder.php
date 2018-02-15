@@ -8,13 +8,14 @@ use Illuminate\Database\Seeder;
  * Date: 1/6/18
  * Time: 13:28
  */
-
 class UsersTableSeeder extends Seeder
 {
     public function run()
     {
         factory(\App\Models\User::class)->create([
-           'email' => 'ander.altissimo@gmail.com'
+            'name' => 'Anderson Altissimo',
+            'email' => 'ander.altissimo@gmail.com',
+            'enrolment' => '100000'
         ]);
     }
 }

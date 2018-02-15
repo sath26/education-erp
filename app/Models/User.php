@@ -25,10 +25,16 @@ use Illuminate\Notifications\Notifiable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $enrolment
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereEnrolment($value)
  */
 class User extends Authenticatable implements TableInterface
 {
     use Notifiable;
+
+    const ROLE_ADMIN = 1;
+    const ROLE_PROFESSOR = 2;
+    const ROLE_STUDENT = 3;
 
     /**
      * The attributes that are mass assignable.
@@ -39,6 +45,7 @@ class User extends Authenticatable implements TableInterface
         'name',
         'email',
         'password',
+        'enrolment'
     ];
 
     /**
@@ -84,5 +91,36 @@ class User extends Authenticatable implements TableInterface
             case 'E-mail':
                 return $this->email;
         }
+    }
+
+    /**
+     * @param Array $data
+     */
+    protected static function createFully($data)
+    {
+        $password = str_random(6);
+        $data['password'] = $password;
+
+        $user = parent::create($data + ['enrolment' => str_random(6)]);
+
+        self::assignEnrolment($user, self::ROLE_ADMIN);
+        $user->save();
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     * @param $type
+     */
+    protected static function assignEnrolment($user, $type)
+    {
+        $types = [
+            self::ROLE_ADMIN => 100000,
+            self::ROLE_PROFESSOR => 400000,
+            self::ROLE_STUDENT => 700000
+        ];
+
+        $user->enrolment = $types[$type] + $user->id;
+        return $user->enrolment;
     }
 }
