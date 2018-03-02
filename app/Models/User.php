@@ -6,7 +6,6 @@ use App\Notifications\UserCreated;
 use Bootstrapper\Interfaces\TableInterface;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Password;
 
 /**
  * App\Models\User
@@ -113,7 +112,7 @@ class User extends Authenticatable implements TableInterface
             $user->notify(new UserCreated($token));
         }
 
-        return $user;
+        return compact('user', 'password');
     }
 
     /**
