@@ -6,6 +6,7 @@ use App\Notifications\UserCreated;
 use Bootstrapper\Interfaces\TableInterface;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Password;
 
 /**
  * App\Models\User
@@ -108,7 +109,8 @@ class User extends Authenticatable implements TableInterface
         $user->save();
 
         if (isset($data['send_mail'])) {
-            $user->notify(new UserCreated());
+            $token = \Password::broker()->createToken($user);
+            $user->notify(new UserCreated($token));
         }
 
         return $user;
