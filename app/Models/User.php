@@ -109,7 +109,10 @@ class User extends Authenticatable implements TableInterface
 
         /** @var User $user */
         $user = parent::create($data + ['enrolment' => str_random(6)]);
-        self::assignEnrolment($user, self::ROLE_ADMIN);
+
+        self::assignEnrolment($user, $data['type']);
+        self::assignRole($user, $data['type']);
+
         $user->save();
 
         if (isset($data['send_mail'])) {
@@ -124,7 +127,7 @@ class User extends Authenticatable implements TableInterface
      * @param User $user
      * @param $type
      */
-    protected static function assignEnrolment($user, $type)
+    public static function assignEnrolment($user, $type)
     {
         $types = [
             self::ROLE_ADMIN => 100000,
@@ -134,5 +137,23 @@ class User extends Authenticatable implements TableInterface
 
         $user->enrolment = $types[$type] + $user->id;
         return $user->enrolment;
+    }
+
+    /**
+     * @param User $user
+     * @param $type
+     */
+    public static function assignRole(User $user, $type)
+    {
+        $types = [
+            self::ROLE_ADMIN => Admin::class,
+            self::ROLE_PROFESSOR => Teacher::class,
+            self::ROLE_STUDENT => Student::class
+        ];
+
+        $model = $types[$type];
+        $model = $model::create([]);
+
+        $user->entity()->associate($model);
     }
 }
