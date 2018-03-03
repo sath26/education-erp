@@ -8,6 +8,6 @@ class Teacher extends Model
 {
     public function user()
     {
-        $this->morphOne(User::class, 'entity');
+        return $this->morphOne(User::class, 'entity');
     }
 }
